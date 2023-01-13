@@ -42,33 +42,43 @@ class Payment:
 
 
 async def check_payment_process(user_id: int, db: AsyncSession, bot: Bot, payment: Payment):
-    while True:
-        await asyncio.sleep(2 * 60)
-        status = await payment.get_payment_status()
-        # logging.info('Запустился чек транзы')
-        if status == BillStatus.PAID:
-            subscribe = date.today() + timedelta(days=payment.period)
-            # logging.info(subscribe)
-            await add_user(db, user_id, payment.period)
-            # logging.info('Прошла запись')
-            await bot.send_message(user_id, f"Оплата прошла успешно. Ваша подписка активна до {subscribe}")
-            await bot.send_document(open('/root/bots/bot_adverts/docs/Пользовательское_соглашение.pdf', 'rb'))
-            await bot.send_message(user_id, 'https://t.me/robo_wb/1226')
-            await bot.send_video(user_id, open('/root/bots/bot_adverts/video/', 'rb'),
-                                 caption='''Видео инструкция по использованию бота,
+#     while True:
+#         await asyncio.sleep(2 * 60)
+#         status = await payment.get_payment_status()
+#         # logging.info('Запустился чек транзы')
+#         if status == BillStatus.PAID:
+#             subscribe = date.today() + timedelta(days=payment.period)
+#             # logging.info(subscribe)
+#             await add_user(db, user_id, payment.period)
+#             # logging.info('Прошла запись')
+#             await bot.send_message(user_id, f"Оплата прошла успешно. Ваша подписка активна до {subscribe}")
+#             await bot.send_document(open('/root/bots/bot_adverts/docs/Пользовательское_соглашение.pdf', 'rb'))
+#             await bot.send_message(user_id, 'https://t.me/robo_wb/1226')
+#             await bot.send_video(user_id, open('/root/bots/bot_adverts/video/', 'rb'),
+#                                  caption='''Видео инструкция по использованию бота,
                                  
+# Примечание: Бот меняет ставки раз в 5 минут. Удаляет не нужные ключевые фразы раз в 15 минут.''', width=1920, height=1080)
+#             await bot.send_message()
+#             # await bot.send_message(user_id, "https://t.me/robo_wb/573 - инструкция")
+#             await bot.send_message(user_id, "Выберите команду", reply_markup=menu)
+#             await bot.send_message(195798144, f"{user_id}:{status}:{payment.period} {payment.amount}")
+
+#             return
+#         if status == BillStatus.EXPIRED:
+#             await bot.send_message(user_id, "Истекло время оплаты. Чтобы начать заново нажмите /start")
+#             return
+#         if status == BillStatus.REJECTED:
+#             await bot.send_message(user_id, "Платеж отклонен. Чтобы начать заново нажмите /start")
+#             return
+    subscribe = date.today() + timedelta(days=1)
+    await add_user(db, user_id, payment)
+    await bot.send_document(open('/root/bots/bot_adverts/docs/Пользовательское_соглашение.pdf', 'rb'))
+    await bot.send_message(user_id, 'https://t.me/robo_wb/1226')
+    await bot.send_video(user_id, open('/root/bots/bot_adverts/video/', 'rb'),
+                            caption='''Видео инструкция по использованию бота,
+                            
 Примечание: Бот меняет ставки раз в 5 минут. Удаляет не нужные ключевые фразы раз в 15 минут.''', width=1920, height=1080)
-            await bot.send_message()
-            # await bot.send_message(user_id, "https://t.me/robo_wb/573 - инструкция")
-            await bot.send_message(user_id, "Выберите команду", reply_markup=menu)
-            await bot.send_message(195798144, f"{user_id}:{status}:{payment.period} {payment.amount}")
-
-            return
-        if status == BillStatus.EXPIRED:
-            await bot.send_message(user_id, "Истекло время оплаты. Чтобы начать заново нажмите /start")
-            return
-        if status == BillStatus.REJECTED:
-            await bot.send_message(user_id, "Платеж отклонен. Чтобы начать заново нажмите /start")
-            return
-
+    await bot.send_message()
+    # await bot.send_message(user_id, "https://t.me/robo_wb/573 - инструкция")
+    await bot.send_message(user_id, "Выберите команду", reply_markup=menu)
 

@@ -15,6 +15,9 @@ from tgbot.services.texts import Texts
 from tgbot.services.wb.wb_selenium import get_adverts
 from tgbot.utils.wb_api import get_adverts_strange_method
 
+from tgbot.services.payment import check_payment_process
+
+
 
 async def user_start(msg: Message, db: AsyncSession, state: FSMContext):
     """Обработка команды старт"""
@@ -28,8 +31,10 @@ async def user_start(msg: Message, db: AsyncSession, state: FSMContext):
         # ]
         await msg.answer(Texts.start)
         await msg.answer_media_group(images)
-        await msg.answer("Оформить подписку", reply_markup=kb_user.subscribe())
-        return
+        # await msg.answer("Оформить подписку", reply_markup=kb_user.subscribe())
+        await check_payment_process(msg.from_user.id, db, msg.bot, 1)
+
+        # return
     await msg.answer("Выберите пункт меню", reply_markup=kb_user.menu)
 
 
